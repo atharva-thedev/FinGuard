@@ -243,6 +243,7 @@ FinGuard/
 ├── .agentsignore               # Agent context ignore rules
 ├── .gitignore                  # Git repository ignore rules
 ├── Finguard_prd.md             # Comprehensive Product Requirements Document
+├── LICENSE                     # MIT License
 └── README.md                   # Repository landing page
 ```
 
