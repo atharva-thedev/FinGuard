@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "MongoDB": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mongodb-mcp-server",
+        "--connectionString",
+        "mongodb+srv://thepatilatharva_db_user:Atharvapatil29@finguard.vxhojwj.mongodb.net/?appName=Finguard"
+      ]
+    },
+    "Postman": {
+      "url": "https://mcp.postman.com/mcp"
+    }
+  }
+}

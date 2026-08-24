@@ -1,0 +1,53 @@
+[project]
+name = "finguard-backend"
+version = "0.1.0"
+description = "FinGuard MVP API — invoice and expense controls"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.141.1",
+    "uvicorn[standard]>=0.35.0",
+    "pydantic>=2.11.0",
+    "pydantic-settings>=2.10.0",
+    "email-validator>=2.2.0",
+    "beanie>=1.29.0",
+    "motor>=3.6.0",
+    "PyJWT>=2.10.0",
+    "bcrypt>=4.2.0",
+    "cryptography>=44.0.0",
+    "slowapi>=0.1.9",
+    "httpx>=0.28.1",
+    "python-multipart>=0.0.20",
+    "python-dotenv>=1.0.1",
+    "structlog>=25.4.0",
+    "celery>=5.5.0",
+    "redis>=5.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.25.0",
+    "ruff>=0.11.0",
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "RUF"]
+ignore = ["B008", "E712", "RUF012", "E501"]
