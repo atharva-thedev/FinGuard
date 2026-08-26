@@ -225,6 +225,79 @@ npm run build
 
 ---
 
+## Port Configuration & Troubleshooting
+
+### Default Port Allocations
+
+| Service | Default Port | Protocol / URL | Configuration Location |
+| :--- | :--- | :--- | :--- |
+| **Frontend (Vite)** | `5173` | `http://127.0.0.1:5173/` | `frontend/vite.config.ts` |
+| **Backend (FastAPI)** | `8000` | `http://127.0.0.1:8000/` | `backend/app/main.py` / CLI `--port` |
+| **API Documentation** | `8000` | `http://127.0.0.1:8000/docs` | Automatic OpenAPI / Swagger UI |
+| **MongoDB Atlas / Local** | `27017` | `mongodb://localhost:27017` | `backend/.env` -> `MONGODB_URL` |
+
+---
+
+### Common Port Errors & Solutions
+
+#### 1. `EADDRINUSE: address already in use :::5173` (Frontend)
+- **Cause**: A previous Vite dev server or Node instance is still running in the background.
+- **Solution**:
+  - **Option A (Kill stuck process on Windows)**:
+    ```powershell
+    # Find the process occupying port 5173:
+    Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue | Select-Object OwningProcess
+    # Terminate the process:
+    Stop-Process -Id <PID> -Force
+    ```
+  - **Option B (Run on an alternate port)**:
+    ```bash
+    npm run dev -- --port 5174
+    ```
+
+#### 2. `[WinError 10048] Only one usage of each socket address is normally permitted` (Backend)
+- **Cause**: An active Uvicorn or Python process is already bound to port 8000.
+- **Solution**:
+  - **Option A (Kill stuck process on Windows)**:
+    ```powershell
+    # PowerShell:
+    Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue | Select-Object OwningProcess
+    Stop-Process -Id <PID> -Force
+
+    # CMD:
+    netstat -ano | findstr :8000
+    taskkill /PID <PID> /F
+    ```
+  - **Option B (Kill on macOS / Linux)**:
+    ```bash
+    lsof -ti :8000 | xargs kill -9
+    ```
+  - **Option C (Run FastAPI on an alternate port)**:
+    ```bash
+    uvicorn app.main:app --reload --port 8080
+    ```
+
+#### 3. `[WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions`
+- **Cause**: Windows Hyper-V, WSL2, or Windows NAT service has dynamically reserved port 8000 or 5173 in its excluded port range.
+- **Solution**:
+  - Check Windows excluded port ranges:
+    ```powershell
+    netsh interface ipv4 show excludedportrange protocol=tcp
+    ```
+  - If port 8000 falls within an excluded range, run the server on port `8080` or `5000`:
+    ```bash
+    uvicorn app.main:app --reload --port 8080
+    ```
+
+#### 4. Frontend Fails to Connect to Backend (CORS / Connection Refused)
+- If you change the backend port (e.g. from `8000` to `8080`), update your `frontend/.env` file:
+  ```env
+  VITE_API_URL=http://127.0.0.1:8080
+  ```
+- Ensure backend CORS settings in `backend/app/core/config.py` allow `http://127.0.0.1:5173` and `http://localhost:5173`.
+
+---
+
 ## API Reference
 
 | Method | Endpoint | Description | Auth Required |
