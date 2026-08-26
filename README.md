@@ -83,31 +83,31 @@ The user interface is built with **React 18**, **TypeScript**, and **Vite**, con
 
 ```mermaid
 flowchart TD
-    A[User Uploads Invoices] -->|POST /api/v1/invoices| B[Ingestion & Validation]
-    B --> C[OCR & Extraction Pipeline]
+    A["User Uploads Invoices"] -->|POST /api/v1/invoices| B["Ingestion & Validation"]
+    B --> C["OCR & Extraction Pipeline"]
     
-    C --> D{Confidence >= 85%?}
-    D -- No --> E[Needs Review Queue]
-    E -->|PATCH /invoices/:id/extraction| F[Human Review & Overrides]
-    F -->|Learns Taxonomy| G[Validated Status]
+    C --> D{"Confidence >= 85%?"}
+    D -- No --> E["Needs Review Queue"]
+    E -->|PATCH /invoices/:id/extraction| F["Human Review & Overrides"]
+    F -->|Learns Taxonomy| G["Validated Status"]
     D -- Yes --> G
     
-    G --> H{Policy Rules & Budget Check}
-    H -- Exception Detected --> I[Exceptions Queue]
-    I -->|POST /exceptions/:id/resolve| J[Controller Resolution]
-    J --> K[Pending Approval Queue]
+    G --> H{"Policy Rules & Budget Check"}
+    H -- Exception Detected --> I["Exceptions Queue"]
+    I -->|POST /exceptions/:id/resolve| J["Controller Resolution"]
+    J --> K["Pending Approval Queue"]
     H -- Policy Passed --> K
     
-    K --> L{Approver Action}
-    L -- Email 1-Click Link --> M[HMAC Action Handler]
-    L -- Dashboard Decision --> N[/approvals/:id/decide]
+    K --> L{"Approver Action"}
+    L -- Email 1-Click Link --> M["HMAC Action Handler"]
+    L -- Dashboard Decision --> N["Dashboard Decision Action"]
     
-    M --> O{Approved / Rejected}
+    M --> O{"Approved or Rejected"}
     N --> O
-    O -- Approved --> P[Invoice Approved]
-    O -- Rejected --> Q[Invoice Discarded]
+    O -- Approved --> P["Invoice Approved"]
+    O -- Rejected --> Q["Invoice Discarded"]
     
-    P --> R[Dashboard KPIs & Audit Log]
+    P --> R["Dashboard KPIs & Audit Log"]
     Q --> R
 ```
 
